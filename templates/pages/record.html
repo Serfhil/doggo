@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{{ record.title }} | Тренируем собачку</title>
+
+    <!-- Общие стили сайта -->
+
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}" />
+
+    <!-- Уникальные стили страницы записи -->
+    <link rel="stylesheet" href="{{ url_for('static', path='record.css') }}" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <h1 class="brand">
+          <a href="/" class="brand-link">Тренируем собачку</a>
+        </h1>
+
+        {% include 'partials/top_panel.html' %}
+      </div>
+    </header>
+
+    <main class="container record-page">
+      <article class="record-article">
+        <!-- Хлебные крошки -->
+        <nav class="record-breadcrumbs" aria-label="Хлебные крошки">
+          <a href="/">Главная</a>
+          <span class="record-breadcrumbs-separator" aria-hidden="true">/</span>
+          <span aria-current="page">{{ record.title }}</span>
+        </nav>
+
+        <!-- Шапка записи -->
+        <header class="record-header">
+          {% if record.category %}
+          <span class="record-kicker">{{ record.category }}</span>
+          {% endif %}
+
+          <h1 class="record-title">{{ record.title }}</h1>
+
+          {% if record.description %}
+          <p class="record-lead">{{ record.description }}</p>
+          {% endif %} {% if record.published_at or record.author %}
+          <div class="record-meta">
+            {% if record.published_at %}
+            <time
+              class="record-meta-item"
+              datetime="{{ record.published_at.isoformat() }}"
+            >
+              {{ record.published_at.strftime('%d.%m.%Y') }}
+            </time>
+            {% endif %} {% if record.author %}
+            <span class="record-meta-item"> Автор: {{ record.author }} </span>
+            {% endif %}
+          </div>
+          {% endif %} {% if record.tags %}
+          <ul class="tags record-tags" aria-label="Теги записи">
+            {% for tag in record.tags %}
+            <li>{{ tag }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </header>
+
+        <!--
+        Блок изображений.
+
+        Логика:
+        1. Берем record.images.
+        2. Оставляем только те объекты, у которых есть url.
+        3. Если после фильтрации список пуст, блок не рендерится вообще.
+
+        Таким образом, если изображения не были загружены,
+        пользователь не увидит пустую рамку или заготовку.
+      -->
+        {% set images = (record.images | default([], true)) | selectattr('url')
+        | list %} {% if images %}
+        <section
+          class="record-gallery{% if images | length > 1 %} record-gallery--multiple{% endif %}"
+          aria-label="Изображения записи"
+        >
+          {% for image in images %}
+          <figure class="record-image">
+            <div class="record-image-media">
+              <img
+                src="{{ image.url }}"
+                alt="{{ image.alt or record.title }}"
+                loading="{% if loop.first %}eager{% else %}lazy{% endif %}"
+                decoding="async"
+                width="{{ image.width or 1600 }}"
+                height="{{ image.height or 1000 }}"
+              />
+            </div>
+
+            {% if image.caption %}
+            <figcaption class="record-image-caption">
+              {{ image.caption }}
+            </figcaption>
+            {% endif %}
+          </figure>
+          {% endfor %}
+        </section>
+        {% endif %}
+
+        <!-- Основной текст записи -->
+        <div class="record-body">
+          {% if record.content %}
+          <!--
+            record.content должен прийти с сервера уже безопасным HTML.
+            Например: Markdown -> HTML + sanitize.
+            Никогда не выводи пользовательский HTML без очистки.
+          -->
+          {{ record.content | safe }} {% else %}
+          <p class="record-empty">Текст записи пока не добавлен.</p>
+          {% endif %}
+        </div>
+
+        <!-- Подвал записи -->
+        <footer class="record-footer">
+          <a href="/" class="record-button"> ← Вернуться к списку </a>
+
+          {% if record.updated_at %}
+          <span class="record-updated">
+            Обновлено: {{ record.updated_at.strftime('%d.%m.%Y') }}
+          </span>
+          {% endif %}
+        </footer>
+      </article>
+    </main>
+  </body>
+</html>

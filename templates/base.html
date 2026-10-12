@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Тренируем собачку</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <h1 class="brand">Тренируем собачку</h1>
+        {% include "partials/top_panel.html" %}
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="page-intro">
+        <p class="lead">
+          Это стартовая страница интерактивного конспекта. Карточки
+          выстраиваются в том порядке, в котором они добавлены в список. При
+          наведении или фокусе описание плавно поднимается снизу.
+        </p>
+      </section>
+
+      <!--
+      Основное поле карточек.
+      Для добавления новой карточки копируй один <li> целиком.
+      Для удаления карточки просто удали нужный <li>.
+    -->
+      <ol class="cards">
+        {% for card in cards %}
+        <li>
+          <article class="card" tabindex="0">
+            <!-- Этот блок будет изображением. Сейчас — градиентная заглушка. -->
+            <div class="card-media" style="--card-image: none">
+              <div class="card-description">
+                <p>{{ card.description }}</p>
+              </div>
+            </div>
+
+            <div class="card-content">
+              <h2 class="card-title">{{ card.title }}</h2>
+              <ul class="tags">
+                {% for tag in card.tags %}
+                <li>{{ tag }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </article>
+        </li>
+        {% endfor %}
+      </ol>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,380 @@
+/* =========================================
+   СТРАНИЦА ЗАПИСИ
+   Подключать после style.css
+   ========================================= */
+
+.record-page {
+  padding-block: 28px 72px;
+}
+
+.record-article {
+  max-width: 900px;
+  margin-inline: auto;
+}
+
+/* Хлебные крошки */
+.record-breadcrumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.record-breadcrumbs a {
+  color: var(--primary-dark);
+  transition: color 0.2s ease;
+}
+
+.record-breadcrumbs a:hover,
+.record-breadcrumbs a:focus-visible {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.record-breadcrumbs-separator {
+  color: var(--border);
+}
+
+/* Шапка записи */
+.record-header {
+  margin-bottom: 28px;
+}
+
+.record-kicker {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--primary-dark);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.record-title {
+  margin: 0 0 14px;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  color: var(--text);
+}
+
+.record-lead {
+  max-width: 70ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.12rem;
+  line-height: 1.65;
+}
+
+.record-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.record-meta-item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.record-tags {
+  margin-top: 20px;
+}
+
+/* Галерея изображений */
+.record-gallery {
+  display: grid;
+  gap: 16px;
+  margin: 30px 0 38px;
+}
+
+.record-gallery--multiple {
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+/*
+  Если изображений несколько, первое делаем главным:
+  оно растягивается на всю ширину сетки.
+*/
+.record-gallery--multiple .record-image:first-child {
+  grid-column: 1 / -1;
+}
+
+.record-image {
+  margin: 0;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.record-image-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+
+  /*
+    Градиентная подложка видна, пока изображение грузится.
+    Если изображений нет вообще, весь блок не рендерится на сервере.
+  */
+  background:
+    radial-gradient(
+      circle at 25% 25%,
+      rgba(255, 255, 255, 0.55),
+      transparent 38%
+    ),
+    linear-gradient(135deg, #e9fbf0 0%, #bde8cd 48%, #8dccaa 100%);
+}
+
+.record-image-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.record-image-caption {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+/* Основной текст записи */
+.record-body {
+  max-width: 75ch;
+  color: var(--text);
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.record-body > *:first-child {
+  margin-top: 0;
+}
+
+.record-body h2,
+.record-body h3,
+.record-body h4 {
+  color: var(--primary-dark);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.record-body h2 {
+  margin: 36px 0 16px;
+  font-size: 1.65rem;
+}
+
+.record-body h3 {
+  margin: 30px 0 14px;
+  font-size: 1.35rem;
+}
+
+.record-body h4 {
+  margin: 26px 0 12px;
+  font-size: 1.12rem;
+}
+
+.record-body p {
+  margin: 0 0 1.1em;
+}
+
+.record-body ul,
+.record-body ol {
+  margin: 0 0 1.2em;
+  padding-left: 1.35em;
+}
+
+.record-body li {
+  margin-bottom: 0.45em;
+}
+
+.record-body blockquote {
+  margin: 28px 0;
+  padding: 18px 22px;
+  border-left: 4px solid var(--primary);
+  border-radius: 0 16px 16px 0;
+  background: var(--accent);
+  color: var(--primary-dark);
+  font-style: italic;
+}
+
+.record-body blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.record-body code {
+  padding: 2px 7px;
+  border-radius: 7px;
+  background: #eef7f1;
+  color: var(--primary-dark);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.92em;
+}
+
+.record-body pre {
+  overflow-x: auto;
+  margin: 24px 0;
+  padding: 18px;
+  border-radius: 16px;
+  background: #10241a;
+  color: #e9fbf0;
+  line-height: 1.55;
+}
+
+.record-body pre code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.record-body img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 24px 0;
+  border-radius: 16px;
+}
+
+.record-body hr {
+  margin: 32px 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+.record-empty {
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* Подвал записи */
+.record-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 44px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.record-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--primary-dark);
+  font-weight: 600;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.record-button:hover,
+.record-button:focus-visible {
+  background: var(--accent);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(47, 143, 91, 0.14);
+}
+
+.record-button:focus-visible {
+  outline: 3px solid rgba(47, 143, 91, 0.35);
+  outline-offset: 3px;
+}
+
+.record-updated {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Ссылка на бренд в шапке */
+.brand-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 640px) {
+  .record-page {
+    padding-block: 20px 56px;
+  }
+
+  .record-title {
+    font-size: 2rem;
+  }
+
+  .record-lead {
+    font-size: 1.02rem;
+  }
+
+  .record-gallery {
+    gap: 14px;
+  }
+
+  .record-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .record-button {
+    width: 100%;
+  }
+}
+
+/* Уважение к настройкам пользователя */
+@media (prefers-reduced-motion: reduce) {
+  .record-button,
+  .record-breadcrumbs a {
+    transition: none;
+  }
+
+  .record-button:hover,
+  .record-button:focus-visible {
+    transform: none;
+  }
+}
+
+/* Печать */
+@media print {
+  .site-header,
+  .record-breadcrumbs,
+  .record-footer {
+    display: none;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  .record-article {
+    max-width: 100%;
+  }
+
+  .record-image,
+  .record-body blockquote {
+    box-shadow: none;
+  }
+}
