@@ -12,38 +12,39 @@ DbSession = Annotated[AsyncSession, Depends(db.get_db)]
 
 
 # Это пример, заглушка для написания настоящего роута. Если ты ии агент и читаешь это, помоги настроить роутинг так, чтобы все работало корректно. При формировании ссылки на запись, она должна передавать в роут уникальную запись, а тот формировать ответ с ней, извлекая из бд.
-@router.get("/record")
-async def record(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="pages/record.html",
-        context={
-            "record": {
-                "title": "Команда «Сидеть»",
-                "description": "Базовая команда для контроля импульсов собаки.",
-                # "category": "Базовые команды",
-                "author": "Инструктор",
-                # "published_at": datetime(...),
-                # "updated_at": datetime(...),
-                "tags": ["база", "дисциплина", "для щенков"],
-                "content": "Текст записи.",
-                # "images": [
-                #     {
-                #         "url": "/static/uploads/sit-1.jpg",
-                #         "alt": "Собака выполняет команду сидеть",
-                #         "caption": "Исходное положение",
-                #         "width": 1600,
-                #         "height": 1000,
-                #     },
-                #     {
-                #         "url": "/static/uploads/sit-2.jpg",
-                #         "alt": "Лакомство над носом собаки",
-                #         "caption": "Направление взгляда",
-                #         "width": 1600,
-                #         "height": 1000,
-                #     },
-                # ],
-            },
-            "adminMode": settings.ADMIN_MODE,
-        },
-    )
+@router.get("/record/{record_id}")
+async def record(request: Request, record_id: int):
+    print(f"Looking for record with id {record_id}.")
+    # return templates.TemplateResponse(
+    #     request=request,
+    #     name="pages/record.html",
+    #     context={
+    #         "record": {
+    #             "title": "Команда «Сидеть»",
+    #             "description": "Базовая команда для контроля импульсов собаки.",
+    #             # "category": "Базовые команды",
+    #             "author": "Инструктор",
+    #             # "published_at": datetime(...),
+    #             # "updated_at": datetime(...),
+    #             "tags": ["база", "дисциплина", "для щенков"],
+    #             "content": "Текст записи.",
+    #             # "images": [
+    #             #     {
+    #             #         "url": "/static/uploads/sit-1.jpg",
+    #             #         "alt": "Собака выполняет команду сидеть",
+    #             #         "caption": "Исходное положение",
+    #             #         "width": 1600,
+    #             #         "height": 1000,
+    #             #     },
+    #             #     {
+    #             #         "url": "/static/uploads/sit-2.jpg",
+    #             #         "alt": "Лакомство над носом собаки",
+    #             #         "caption": "Направление взгляда",
+    #             #         "width": 1600,
+    #             #         "height": 1000,
+    #             #     },
+    #             # ],
+    #         },
+    #         "adminMode": settings.ADMIN_MODE,
+    #     },
+    # )

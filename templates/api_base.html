@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Тари пишет АПИ</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family:
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #f4f4f5;
+        color: #18181b;
+        line-height: 1.5;
+      }
+
+      header {
+        background: #18181b;
+        color: #f4f4f5;
+        padding: 1.5rem 2rem;
+        border-bottom: 3px solid #2563eb;
+      }
+
+      header h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
+
+      main {
+        max-width: 720px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+      }
+
+      section h2 {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #18181b;
+      }
+
+      .form_wrapper {
+        background: #ffffff;
+        border: 1px solid #d4d4d8;
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .form_group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form_group > label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+        color: #52525b;
+      }
+
+      .form_group input[type="text"],
+      .form_group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 1rem;
+        border: 1px solid #a1a1aa;
+        background: #ffffff;
+        color: #18181b;
+        outline: none;
+        font-family: inherit;
+        border-radius: 0;
+      }
+
+      .form_group input[type="text"]:focus,
+      .form_group textarea:focus {
+        border-color: #18181b;
+        box-shadow: 0 0 0 1px #18181b;
+      }
+
+      .form_group textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+
+      /* Стили для чекбоксов (строгий геометричный стиль) */
+      .checkbox_group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 0.25rem;
+      }
+
+      .checkbox_label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #18181b;
+        padding: 0.6rem 1rem;
+        border: 1px solid #d4d4d8;
+        background: #ffffff;
+        border-radius: 0;
+        transition:
+          border-color 0.15s,
+          background 0.15s;
+        user-select: none;
+      }
+
+      .checkbox_label:hover {
+        border-color: #18181b;
+      }
+
+      .checkbox_label input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 1.1rem;
+        height: 1.1rem;
+        border: 2px solid #a1a1aa;
+        background: #ffffff;
+        cursor: pointer;
+        position: relative;
+        border-radius: 0;
+        flex-shrink: 0;
+        transition:
+          background 0.15s,
+          border-color 0.15s;
+      }
+
+      .checkbox_label input[type="checkbox"]:checked {
+        background: #2563eb;
+        border-color: #2563eb;
+      }
+
+      .checkbox_label input[type="checkbox"]:checked::after {
+        content: "";
+        position: absolute;
+        left: 3px;
+        top: 0px;
+        width: 5px;
+        height: 10px;
+        border: solid #ffffff;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+
+      .checkbox_label:has(input[type="checkbox"]:checked) {
+        border-color: #2563eb;
+        background: #eff6ff;
+      }
+
+      button[type="submit"] {
+        background: #18181b;
+        color: #ffffff;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        border-radius: 0;
+        transition: background 0.15s;
+      }
+
+      button[type="submit"]:hover {
+        background: #2563eb;
+      }
+
+      .user_card {
+        background: #ffffff;
+        border: 1px solid #d4d4d8;
+        border-left: 4px solid #2563eb;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .user_card p {
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+      }
+
+      .user_card ul {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+      }
+
+      .user_card li {
+        background: #e4e4e7;
+        color: #3f3f46;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-radius: 0;
+      }
+
+      main > p {
+        color: #71717a;
+        font-style: italic;
+        margin-bottom: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Users api.</h1>
+    </header>
+
+    <main>
+      <section>
+        <h2>{{ title }}</h2>
+      </section>
+
+      <div class="form_wrapper">
+        <form
+          method="POST"
+          action="{{ url_for('submit') }}"
+          enctype="multipart/form-data"
+        >
+          <div class="form_group">
+            <label for="user_name">Имя</label>
+            <input type="text" id="user_name" name="name" required />
+          </div>
+
+          <div class="form_group">
+            <label for="user_text">Текст</label>
+            <textarea id="user_text" name="text" required></textarea>
+          </div>
+
+          <div class="form_group">
+            <label>Теги</label>
+            <div class="checkbox_group">
+              <label class="checkbox_label">
+                <input type="checkbox" name="tags" value="Красивый" />
+                <span>Красивый</span>
+              </label>
+              <label class="checkbox_label">
+                <input type="checkbox" name="tags" value="Рыжий" />
+                <span>Рыжий</span>
+              </label>
+              <label class="checkbox_label">
+                <input type="checkbox" name="tags" value="Богатый" />
+                <span>Богатый</span>
+              </label>
+              <label class="checkbox_label">
+                <input type="checkbox" name="tags" value="Испачкавшись" />
+                <span>Испачкавшись</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form_group">
+            <button type="submit">Отправить</button>
+          </div>
+        </form>
+      </div>
+
+      {% if not users %}
+      <p>Space is looking real empty.</p>
+      {% endif %} {% for user in users %}
+      <div class="user_card">
+        <p><strong>Name:</strong> {{ user.name }}</p>
+        <p><strong>Text:</strong> {{ user.text }}</p>
+        <ul>
+          {% for tag in user.tags %}
+          <li>{{ tag }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </main>
+  </body>
+</html>

@@ -8,7 +8,7 @@ import db
 from utils.logger import get_logger, setup_logging
 
 # Импортируем наши роутеры
-from routes import index, admin, record
+from routes import index, admin, record, api
 
 setup_logging()
 logger = get_logger(__name__)
@@ -39,6 +39,7 @@ app.mount(
 app.include_router(index.router)
 app.include_router(admin.router)
 app.include_router(record.router)
+app.include_router(api.router)
 
 if __name__ == "__main__":
     import uvicorn

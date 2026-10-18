@@ -4,10 +4,6 @@
     <li><a href="/" class="active" aria-current="page">Главная</a></li>
     {% else %}
     <li><a href="/">Главная</a></li>
-    {% endif %} {% if active_page=='page' %}
-    <li><a href="/page" class="active" aria-current="page">Страница</a></li>
-    {% else %}
-    <li><a href="/page">Страница</a></li>
     {% endif %} {% if adminMode %} {% if active_page=='admin' %}
     <li><a href="/admin" class="active" aria-current="page">Админка</a></li>
     {% else %}
