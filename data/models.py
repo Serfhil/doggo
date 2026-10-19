@@ -18,10 +18,12 @@ class Tag(Base):
     name = Column(String, unique=True, nullable=False)
 
 
+# DB model
 class Record(Base):
     __tablename__ = "records"
     id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False)
+    description = Column(String, nullable=False)
     record_type = Column(String, nullable=False)
     created_at = Column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)

@@ -1,11 +1,9 @@
 # main.py
-from collections.abc import AsyncGenerator
-from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-import db
 from utils.logger import get_logger, setup_logging
+from data.db import init_db
 
 # Импортируем наши роутеры
 from routes import index, admin, record, api
@@ -15,18 +13,7 @@ logger = get_logger(__name__)
 BASE_DIR = Path(__file__).resolve().parent
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    await db.init_db()
-    logger.info("База данных инициализирована")
-    try:
-        yield
-    finally:
-        await db.dispose_db()
-        logger.info("Соединения с базой данных закрыты")
-
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 # Монтируем статику
 app.mount(
@@ -40,6 +27,9 @@ app.include_router(index.router)
 app.include_router(admin.router)
 app.include_router(record.router)
 app.include_router(api.router)
+
+# Инициализируем бд
+init_db()
 
 if __name__ == "__main__":
     import uvicorn

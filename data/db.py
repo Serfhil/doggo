@@ -1,10 +1,14 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-from .base import Base
-from .models import Record, Tag
+from data.base import Base
+from data.models import Record, Tag
+
+from utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 engine = create_engine(
-    "sqlite:///./Data/app.db", connect_args={"check_same_thread": False}
+    "sqlite:///./data/app.db", connect_args={"check_same_thread": False}
 )
 SessionLocal = sessionmaker(bind=engine)
 
@@ -43,6 +47,7 @@ def create_record(session: Session, data: dict) -> Record:
     session.add(new_record)
     session.commit()
     session.refresh(new_record)
+    logger.info("Create record was called.")
     return new_record
 
 

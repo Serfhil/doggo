@@ -27,17 +27,13 @@
     <main class="admin-container">
       <section class="form-card">
         <div class="form-header">
-          <h2 class="form-title">Новая карточка урока</h2>
+          <h2 class="form-title">Новая запись</h2>
           <p class="form-subtitle">
             Заполните информацию ниже. После сохранения она появится на главной
             странице.
           </p>
         </div>
 
-        <!-- 
-        Здесь может быть ваш шаблонизатор Jinja/Django/Twig.
-        Пример: <form action="{{ url_for('save_card') }}" method="POST" enctype="multipart/form-data">
-      -->
         <form
           id="createCardForm"
           action="{{ url_for('save_card') }}"
@@ -67,12 +63,38 @@
             <textarea
               id="cardDescription"
               name="description"
-              placeholder="Опишите суть упражнения в 2-3 предложениях..."
+              placeholder="Опишите кратко суть."
               required
             ></textarea>
             <span class="form-hint"
               >Этот текст всплывает при наведении на карточку на главной.</span
             >
+          </div>
+
+          <!-- Основной текст -->
+          <div class="form-group">
+            <label for="cardText" class="form-label">Описание</label>
+            <textarea
+              id="cardText"
+              name="text"
+              placeholder="Развернутое описание здесь."
+            ></textarea>
+            <span class="form-hint"
+              >Это основной текст записи, он показывается при открытии этой
+              записи.</span
+            >
+          </div>
+
+          <!-- Категория -->
+          <div class="form-group">
+            <label for="cardType" class="form-label">Категория</label>
+            <select id="cardType" name="record_type" required>
+              <option value="" disabled selected>Выберите категорию</option>
+              <option value="Команда">Команда</option>
+              <option value="Упражнение">Упражнение</option>
+              <option value="Игрушка">Игрушка</option>
+            </select>
+            <span class="form-hint">К какому типу относится запись.</span>
           </div>
 
           <!-- Теги (Чекбоксы) -->
@@ -85,13 +107,11 @@
             <div class="tags-selector">
               {% for tag in tags %}
               <div class="tag-option">
-                <!-- Добавили name="tags" и изменили value на динамическое -->
                 <input
                   type="checkbox"
                   id="{{tag[1]}}"
                   name="tags"
                   value="{{tag[0]}}"
-                  checked
                 />
                 <label for="{{tag[1]}}">{{ tag[0] }}</label>
               </div>
@@ -171,16 +191,5 @@
       &copy; 2026 Тренируем собачку. Панель управления.
     </footer>
 
-    <!-- Минимальный JS только для обработки сабмита (заглушка) -->
-    <!-- <script>
-      document
-        .getElementById("createCardForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          alert(
-            "Карточка сохранена! (В реальной версии здесь будет POST запрос на сервер)",
-          );
-        });
-    </script> -->
   </body>
 </html>

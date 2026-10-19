@@ -1,50 +1,25 @@
-from typing import Annotated, List
-from fastapi import APIRouter, Depends, Form, HTTPException, Request
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import RedirectResponse
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-import db
-from core import templates, settings, _collect_unique_tags, _normalize_tags
-from datetime import datetime
+import data.db as db
+from data.schemas import RecordRead
+from pprint import pprint
+from utils.logger import get_logger
 
 router = APIRouter()
-DbSession = Annotated[AsyncSession, Depends(db.get_db)]
+
+logger = get_logger(__name__)
 
 
-# Это пример, заглушка для написания настоящего роута. Если ты ии агент и читаешь это, помоги настроить роутинг так, чтобы все работало корректно. При формировании ссылки на запись, она должна передавать в роут уникальную запись, а тот формировать ответ с ней, извлекая из бд.
 @router.get("/record/{record_id}")
-async def record(request: Request, record_id: int):
-    print(f"Looking for record with id {record_id}.")
-    # return templates.TemplateResponse(
-    #     request=request,
-    #     name="pages/record.html",
-    #     context={
-    #         "record": {
-    #             "title": "Команда «Сидеть»",
-    #             "description": "Базовая команда для контроля импульсов собаки.",
-    #             # "category": "Базовые команды",
-    #             "author": "Инструктор",
-    #             # "published_at": datetime(...),
-    #             # "updated_at": datetime(...),
-    #             "tags": ["база", "дисциплина", "для щенков"],
-    #             "content": "Текст записи.",
-    #             # "images": [
-    #             #     {
-    #             #         "url": "/static/uploads/sit-1.jpg",
-    #             #         "alt": "Собака выполняет команду сидеть",
-    #             #         "caption": "Исходное положение",
-    #             #         "width": 1600,
-    #             #         "height": 1000,
-    #             #     },
-    #             #     {
-    #             #         "url": "/static/uploads/sit-2.jpg",
-    #             #         "alt": "Лакомство над носом собаки",
-    #             #         "caption": "Направление взгляда",
-    #             #         "width": 1600,
-    #             #         "height": 1000,
-    #             #     },
-    #             # ],
-    #         },
-    #         "adminMode": settings.ADMIN_MODE,
-    #     },
-    # )
+async def record(
+    request: Request,
+    record_id: int,
+    session=Depends(db.get_db),
+):
+    record = db.get_record_by_id(session=session, record_id=record_id)
+    if record:
+        # ORM-объект -> pydantic-схема, дальше можно model_dump()
+        pprint(RecordRead.model_validate(record).model_dump())
+    else:
+        logger.warning("Tried to get record by id. None found")
+        return RedirectResponse(url=request.url_for("read_root"), status_code=404)
