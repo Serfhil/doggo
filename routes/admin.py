@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 import data.db as db
 from core import settings, templates
+from data import images as image_service
 from data import records, taxonomy
 from data.models import Category
 from data.schemas import RecordForm
@@ -91,6 +92,10 @@ def _form_page(
             "new_tags": new_tags,
             "notice": notice,
             "max_images": settings.MAX_IMAGES_PER_RECORD,
+            "max_upload_mb": settings.MAX_UPLOAD_MB,
+            "images": [image_service.image_dict(i) for i in record.images]
+            if record
+            else [],
         },
     )
 

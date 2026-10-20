@@ -8,7 +8,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from core import BASE_DIR, settings, templates
 from data.db import init_db
-from routes import admin, index, record, taxonomy
+from routes import admin, admin_api, index, record, taxonomy
 from utils.logger import get_logger, setup_logging
 
 setup_logging()
@@ -41,6 +41,7 @@ app.include_router(index.router)
 app.include_router(record.router)
 app.include_router(admin.router)
 app.include_router(taxonomy.router)
+app.include_router(admin_api.router)
 
 
 @app.get("/health", include_in_schema=False)

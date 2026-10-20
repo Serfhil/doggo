@@ -84,9 +84,34 @@
       </div>
     </form>
   </section>
+
+  {% if record %}
+  <section class="form-card images-card">
+    <div class="form-header">
+      <h2 class="form-title">Изображения</h2>
+      <p class="form-subtitle">
+        Первая картинка становится обложкой карточки. Изменения здесь
+        сохраняются сразу, кнопка «Сохранить» выше для них не нужна.
+      </p>
+    </div>
+    <div
+      id="images-app"
+      data-record-id="{{ record.id }}"
+      data-max="{{ max_images }}"
+      data-max-mb="{{ max_upload_mb }}"
+    >
+      <p class="form-hint">Для работы с картинками нужен включённый JavaScript.</p>
+    </div>
+    <script type="application/json" id="images-data">{{ images|tojson }}</script>
+  </section>
+  {% endif %}
 </main>
 {% endblock %}
 {% block admin_scripts %}
 <script src="{{ url_for('static', path='vendor/quill/quill.js') }}"></script>
 <script src="{{ url_for('static', path='admin/editor.js') }}" defer></script>
+{% if record %}
+<script src="{{ url_for('static', path='vendor/vue/vue.global.prod.js') }}"></script>
+<script src="{{ url_for('static', path='admin/images.js') }}" defer></script>
+{% endif %}
 {% endblock %}
