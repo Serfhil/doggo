@@ -25,8 +25,10 @@ def clean_name(value: str) -> str:
 
 
 def sanitize_html(value: str) -> str:
+    # Quill подменяет пробелы на &nbsp;, из-за этого строки не переносятся на телефоне
+    value = (value or "").replace("&nbsp;", " ").replace("\u00a0", " ")
     cleaned = nh3.clean(
-        value or "",
+        value,
         tags=ALLOWED_TAGS,
         attributes=ALLOWED_ATTRIBUTES,
         url_schemes=ALLOWED_SCHEMES,

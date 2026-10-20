@@ -291,8 +291,9 @@ button:focus-visible {
   overflow: hidden;
 }
 
-.card-tags {
-  padding: 0 18px 18px;
+.tags.card-tags {
+  margin: 0;
+  padding: 14px 18px 18px;
 }
 
 .card-title {
@@ -345,6 +346,45 @@ button:focus-visible {
   .cards {
     grid-template-columns: repeat(3, 1fr);
   }
+}
+
+/* Кнопки (общие для сайта и админки) */
+.btn {
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid transparent;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--heading);
+  border-color: var(--tag-border);
+}
+
+.btn-primary:hover {
+  background: var(--primary);
+  color: var(--brown);
+  border-color: var(--primary);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--muted);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--accent);
+  color: var(--text);
 }
 
 /* Поиск, категории, пагинация */

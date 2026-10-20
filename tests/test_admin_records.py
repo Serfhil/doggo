@@ -114,3 +114,9 @@ def test_admin_list_search_filter(client, category_id):
     client.post("/admin/new", data=make_form(category_id, title="Лежать"))
     page = client.get("/admin?q=ЛЕЖАТЬ")
     assert "Лежать" in page.text and "Сидеть" not in page.text
+
+
+def test_nbsp_replaced_with_spaces(client, session_factory, category_id):
+    client.post("/admin/new", data=make_form(category_id, text="<p>один&nbsp;два\u00a0три</p>"))
+    with session_factory() as session:
+        assert session.query(Record).one().text == "<p>один два три</p>"

@@ -66,6 +66,20 @@ async def html_errors(request: Request, exc: StarletteHTTPException):
     )
 
 
+@app.exception_handler(Exception)
+async def server_error(request: Request, exc: Exception):
+    logger.exception("Unhandled error on %s", request.url.path)
+    return templates.TemplateResponse(
+        request=request,
+        status_code=500,
+        name="pages/error.html",
+        context={
+            "heading": "Что-то пошло не так",
+            "message": "Ошибка на сервере. Попробуйте обновить страницу чуть позже.",
+        },
+    )
+
+
 if __name__ == "__main__":
     import uvicorn
 
