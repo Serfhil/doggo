@@ -1,298 +1,323 @@
+/* =========================================
+   ОБЩИЕ СТИЛИ САЙТА
+   Палитра рыжей таксы: рыжий окрас + тёмно-коричневый нос.
+   Все цвета заданы переменными, остальные файлы CSS берут их отсюда.
+   ========================================= */
 :root {
-      --bg: #f4fbf6;
-      --surface: #ffffff;
-      --text: #163323;
-      --muted: #5e7d69;
-      --primary: #2f8f5b;
-      --primary-dark: #1d6840;
-      --accent: #dcf5e6;
-      --border: #d8eddf;
-      --shadow: 0 14px 34px rgba(29, 104, 64, 0.12);
-      --radius: 22px;
-    }
+  --bg: #ffe9cf; /* фон страницы: светлая рыжина */
+  --surface: #fffaf4; /* карточки и формы */
+  --text: #3b2112; /* основной текст: тёплый коричневый */
+  --heading: #7a3410; /* заголовки: глубокий рыжий, мягче коричневого */
+  --muted: #7b5239; /* второстепенный текст */
+  --primary: #e8741e; /* основной рыжий окрас */
+  --primary-dark: #a8480f; /* тёмно-рыжий: ссылки и наведение */
+  --accent: #ffd3a1; /* светлый рыжий: фон при наведении */
+  --border: #f0c79a;
+  --tag-bg: #ffddb8;
+  --tag-border: #f0b97c;
+  --tag-text: #7a3a0c;
+  --brown: #3b2112; /* «нос» и мелкий текст на рыжем */
+  --shadow: 0 10px 24px rgba(120, 60, 15, 0.14);
+  --radius: 20px;
 
-    * {
-      box-sizing: border-box;
-    }
+  --font-display: "Bitter", Georgia, "Times New Roman", serif;
+  --font-body: "Onest", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+}
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(47, 143, 91, 0.10), transparent 320px),
-        radial-gradient(circle at right 10%, rgba(134, 201, 165, 0.16), transparent 360px),
-        var(--bg);
-      color: var(--text);
-    }
+* {
+  box-sizing: border-box;
+}
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+}
 
-    .container {
-      width: min(1120px, calc(100% - 32px));
-      margin-inline: auto;
-    }
+/* Все заголовки набираем display-шрифтом */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+}
 
-    /* Шапка и меню */
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
-    .header-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      min-height: 72px;
-      padding-block: 12px;
-    }
+.container {
+  width: min(1120px, calc(100% - 32px));
+  margin-inline: auto;
+}
 
-    .brand {
-      margin: 0;
-      font-size: clamp(1.25rem, 2vw, 1.6rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      color: var(--primary-dark);
-    }
+/* Видимый фокус с клавиатуры для всех интерактивных элементов */
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--brown);
+  outline-offset: 3px;
+}
 
-    .main-nav ul {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
+/* Шапка и меню */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--primary);
+  border-bottom: 4px solid var(--primary-dark);
+}
 
-    .main-nav a {
-      display: inline-flex;
-      align-items: center;
-      min-height: 40px;
-      padding: 0 14px;
-      border-radius: 999px;
-      font-weight: 600;
-      color: var(--muted);
-      transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-    }
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 72px;
+  padding-block: 12px;
+}
 
-    .main-nav a:hover,
-    .main-nav a:focus-visible {
-      background: var(--accent);
-      color: var(--primary-dark);
-    }
+/* Название сайта с «носом» — единственная фирменная деталь */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: clamp(1.3rem, 2.4vw, 1.8rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #5c2a0c;
+}
 
-    .main-nav a.active {
-      background: var(--primary);
-      color: #fff;
-      box-shadow: 0 8px 18px rgba(47, 143, 91, 0.22);
-    }
+.brand::before {
+  content: "";
+  flex-shrink: 0;
+  width: 22px;
+  height: 17px;
+  background: var(--brown);
+  border-radius: 50% 50% 55% 55% / 42% 42% 58% 58%;
+}
 
-    .main-nav a:focus-visible,
-    .card:focus-visible {
-      outline: 3px solid rgba(47, 143, 91, 0.35);
-      outline-offset: 3px;
-    }
+.main-nav ul {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 
-    /* Вводный блок */
-    .page-intro {
-      padding-block: 34px 10px;
-    }
+.main-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  color: var(--brown);
+  transition: background 0.2s ease, color 0.2s ease;
+}
 
-    .lead {
-      max-width: 70ch;
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.6;
-    }
+.main-nav a:hover,
+.main-nav a:focus-visible {
+  background: rgba(255, 244, 230, 0.35);
+}
 
-    /*
-      Основное поле карточек.
-      Порядок карточек = порядок элементов в списке <ol>.
-      Позже админка сможет просто добавлять или удалять <li>.
-    */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 24px;
-      margin: 24px 0 56px;
-      padding: 0;
-      list-style: none;
-      counter-reset: card;
-    }
+.main-nav a.active {
+  background: #fff4e6;
+  color: var(--heading);
+}
 
-    .cards > li {
-      counter-increment: card;
-    }
+/* Вводный блок */
+.page-intro {
+  padding-block: 40px 10px;
+}
 
-    .card {
-      position: relative;
-      height: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
+.lead {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--text);
+  font-size: 1.1rem;
+  line-height: 1.65;
+}
 
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 18px 42px rgba(29, 104, 64, 0.16);
-    }
+/*
+  Основное поле карточек.
+  Порядок карточек = порядок элементов в списке <ol>.
+  Позже админка сможет просто добавлять или удалять <li>.
+*/
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 24px;
+  margin: 28px 0 64px;
+  padding: 0;
+  list-style: none;
+  counter-reset: card;
+}
 
-    /* Номер карточки в порядке следования */
-    .card::before {
-      content: counter(card);
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      z-index: 3;
-      display: grid;
-      place-items: center;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.92);
-      color: var(--primary-dark);
-      font-weight: 800;
-      box-shadow: 0 6px 16px rgba(22, 51, 35, 0.12);
-    }
+.cards > li {
+  counter-increment: card;
+}
 
-    /*
-      Блок изображения.
-      Сейчас это градиентная заглушка.
+.card {
+  position: relative;
+  height: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
 
-      Чтобы подключить реальное изображение с сервера, добавь инлайн-стиль:
-      style="--card-image: url('https://example.com/image.jpg');"
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(120, 60, 15, 0.2);
+}
 
-      Если изображение не загрузится, нижним слоем останется градиент.
-      Такой приём работает на чистом CSS без JavaScript.
-    */
-    .card-media {
-      --card-image: none;
-      position: relative;
-      aspect-ratio: 16 / 10;
-      overflow: hidden;
-      background-image:
-        var(--card-image),
-        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.55), transparent 38%),
-        linear-gradient(135deg, #e9fbf0 0%, #bde8cd 48%, #8dccaa 100%);
-      background-size: cover, auto, auto;
-      background-position: center, center, center;
-      background-repeat: no-repeat, no-repeat, no-repeat;
-    }
+.card:focus-visible {
+  outline: 3px solid var(--brown);
+  outline-offset: 3px;
+}
 
-    /* Лёгкий декоративный слой вместо картинки */
-    .card-media::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 78% 22%, rgba(255, 255, 255, 0.38) 0 8%, transparent 9%),
-        radial-gradient(circle at 86% 34%, rgba(255, 255, 255, 0.28) 0 5%, transparent 6%),
-        linear-gradient(180deg, transparent 55%, rgba(255, 255, 255, 0.22));
-      pointer-events: none;
-    }
+/* Номер карточки в порядке следования */
+.card::before {
+  content: counter(card);
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #fff4e6;
+  color: var(--heading);
+  font-family: var(--font-display);
+  font-weight: 800;
+}
 
-    /* Описание, которое поднимается снизу при наведении */
-    .card-description {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 2;
-      padding: 16px 18px;
-      background: rgba(255, 255, 255, 0.94);
-      border-top: 1px solid var(--border);
-      color: var(--text);
-      line-height: 1.5;
-      transform: translateY(100%);
-      opacity: 0;
-      transition:
-        transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
-        opacity 0.25s ease;
-    }
+/*
+  Блок изображения.
+  Сейчас это тёплая рыжая заглушка.
 
-    .card-description p {
-      margin: 0;
-      font-size: 0.95rem;
-    }
+  Чтобы подключить реальное изображение с сервера, добавь инлайн-стиль:
+  style="--card-image: url('https://example.com/image.jpg');"
 
-    .card:hover .card-description,
-    .card:focus .card-description,
-    .card:focus-within .card-description {
-      transform: translateY(0);
-      opacity: 1;
-    }
+  Если изображение не загрузится, нижним слоем останется заливка.
+  Такой приём работает на чистом CSS без JavaScript.
+*/
+.card-media {
+  --card-image: none;
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background-image: var(--card-image),
+    linear-gradient(135deg, #ffc58c 0%, #f59a47 55%, #e8741e 100%);
+  background-size: cover, auto;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+}
 
-    /* Текст и теги под изображением */
-    .card-content {
-      padding: 18px;
-    }
+/* Описание, которое поднимается снизу при наведении */
+.card-description {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: 16px 18px;
+  background: rgba(255, 248, 238, 0.96);
+  border-top: 3px solid var(--primary);
+  color: var(--text);
+  line-height: 1.5;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 0.25s ease;
+}
 
-    .card-title {
-      margin: 0;
-      font-size: 1.15rem;
-      line-height: 1.25;
-      letter-spacing: -0.02em;
-      color: var(--primary-dark);
-    }
+.card-description p {
+  margin: 0;
+  font-size: 0.95rem;
+}
 
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 14px 0 0;
-      padding: 0;
-      list-style: none;
-    }
+.card:hover .card-description,
+.card:focus .card-description,
+.card:focus-within .card-description {
+  transform: translateY(0);
+  opacity: 1;
+}
 
-    .tags li {
-      padding: 7px 11px;
-      border: 1px solid #c9ead6;
-      border-radius: 999px;
-      background: #f0fbf4;
-      color: var(--primary-dark);
-      font-size: 0.82rem;
-      font-weight: 600;
-    }
+/* Текст и теги под изображением */
+.card-content {
+  padding: 18px;
+}
 
-    /* Адаптив для мобильных */
-    @media (max-width: 640px) {
-      .header-inner {
-        align-items: flex-start;
-        flex-direction: column;
-        padding-block: 14px;
-      }
+.card-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--heading);
+}
 
-      .main-nav ul {
-        width: 100%;
-      }
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
 
-      .main-nav a {
-        flex: 1;
-        justify-content: center;
-      }
-    }
+.tags li {
+  padding: 6px 11px;
+  border: 1px solid var(--tag-border);
+  border-radius: 8px;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
 
-    /* Уважение к настройкам пользователя */
-    @media (prefers-reduced-motion: reduce) {
-      .card,
-      .card-description,
-      .main-nav a {
-        transition: none;
-      }
+/* Адаптив для мобильных */
+@media (max-width: 640px) {
+  .header-inner {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-block: 14px;
+  }
 
-      .card-description {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
+  .main-nav ul {
+    width: 100%;
+  }
+
+  .main-nav a {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+/* Уважение к настройкам пользователя */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card-description,
+  .main-nav a {
+    transition: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+
+  .card-description {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

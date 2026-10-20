@@ -1,7 +1,7 @@
 # main.py
-from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from core import BASE_DIR
 from utils.logger import get_logger, setup_logging
 from data.db import init_db
 
@@ -10,7 +10,6 @@ from routes import index, admin, record, api
 
 setup_logging()
 logger = get_logger(__name__)
-BASE_DIR = Path(__file__).resolve().parent
 
 
 app = FastAPI()

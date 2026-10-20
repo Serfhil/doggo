@@ -1,19 +1,17 @@
 # Testing and learning form interactions and pydantic models
 
-from typing import Annotated
-from fastapi import APIRouter, Depends, Request, Form
+from fastapi import APIRouter, Request, Form
 from fastapi.responses import RedirectResponse
 
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from core import templates, settings
+from core import templates
 
 from pydantic import BaseModel
 
-from rich import print
+from utils.logger import get_logger
 
 router = APIRouter()
+
+logger = get_logger(__name__)
 
 
 users = []
@@ -45,10 +43,10 @@ async def post_api(
     tags: list = Form(...),
 ):
     if not name or not text or not tags:
-        print("Api got post without all fields filled.")
+        logger.warning("Api got post without all fields filled.")
         return RedirectResponse(url=request.url_for("get_api"), status_code=303)
     new_user = User(name=name, text=text, tags=tags)
     users.append(new_user)
-    print(new_user)
+    logger.info("Api got new user: %s", new_user)
 
     return RedirectResponse(url=request.url_for("get_api"), status_code=303)

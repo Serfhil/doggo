@@ -4,6 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Тренируем собачку</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700;800&family=Onest:wght@400;500;600;700&display=swap"
+    />
     <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}" />
   </head>
   <body>
@@ -27,23 +33,25 @@
       <ol class="cards">
         {% for card in cards %}
         <li>
-          <article class="card" tabindex="0">
-            <!-- Этот блок будет изображением. Сейчас — градиентная заглушка. -->
-            <div class="card-media" style="--card-image: none">
-              <div class="card-description">
-                <p>{{ card.description }}</p>
+          <a href="{{ url_for('record', record_id = card.id) }}">
+            <article class="card" tabindex="0">
+              <!-- Этот блок будет изображением. Сейчас — градиентная заглушка. -->
+              <div class="card-media" style="--card-image: none">
+                <div class="card-description">
+                  <p>{{ card.description }}</p>
+                </div>
               </div>
-            </div>
 
-            <div class="card-content">
-              <h2 class="card-title">{{ card.title }}</h2>
-              <ul class="tags">
-                {% for tag in card.tags %}
-                <li>{{ tag }}</li>
-                {% endfor %}
-              </ul>
-            </div>
-          </article>
+              <div class="card-content">
+                <h2 class="card-title">{{ card.title }}</h2>
+                <ul class="tags">
+                  {% for tag in card.tags %}
+                  <li>{{ tag }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </article>
+          </a>
         </li>
         {% endfor %}
       </ol>
