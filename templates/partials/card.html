@@ -1,0 +1,29 @@
+{# Карточка записи. Ожидает card (Record) и card_url (ссылка на запись) #}
+<article class="card">
+  <a class="card-link" href="{{ card_url }}">
+    <div class="card-media">
+      {% if card.images %}
+      <img
+        src="/uploads/{{ card.images[0].thumb_filename }}"
+        alt="{{ card.images[0].alt }}"
+        width="480"
+        height="300"
+        loading="lazy"
+      />
+      {% endif %}
+      <div class="card-description"><p>{{ summary(card) }}</p></div>
+    </div>
+    <div class="card-content">
+      <span class="card-kicker">{{ card.category.name }}</span>
+      <h2 class="card-title">{{ card.title }}</h2>
+      <p class="card-excerpt">{{ summary(card) }}</p>
+    </div>
+  </a>
+  {% if card.tags %}
+  <ul class="tags card-tags">
+    {% for tag in card.tags %}
+    <li><a href="/?tag={{ tag.id }}">{{ tag.name }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</article>

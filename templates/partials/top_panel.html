@@ -1,13 +1,7 @@
 <nav class="main-nav" aria-label="Основное меню">
   <ul>
-    {% if active_page=='main' %}
-    <li><a href="/" class="active" aria-current="page">Главная</a></li>
-    {% else %}
-    <li><a href="/">Главная</a></li>
-    {% endif %} {% if adminMode %} {% if active_page=='admin' %}
-    <li><a href="/admin" class="active" aria-current="page">Админка</a></li>
-    {% else %}
-    <li><a href="/admin">Админка</a></li>
-    {% endif %} {% endif %}
+    <li>
+      <a href="/" {% if request.url.path == '/' %}class="active" aria-current="page"{% endif %}>Главная</a>
+    </li>
   </ul>
 </nav>

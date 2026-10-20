@@ -1,0 +1,85 @@
+{% extends "admin/base.html" %}
+{% block title %}Теги и категории | Админка{% endblock %}
+{% block content %}
+<main class="admin-container">
+  {% if notice %}<p class="notice" role="status">{{ notice }}</p>{% endif %}
+  {% if error %}<p class="notice notice-error" role="alert">{{ error }}</p>{% endif %}
+
+  <section class="cards-list-section">
+    <div class="list-header">
+      <h2 class="list-title">Категории</h2>
+      <span class="list-count">{{ categories|length }} шт.</span>
+    </div>
+    <ul class="existing-cards">
+      {% for category, count in categories %}
+      <li class="tax-item">
+        <form class="tax-rename" action="/admin/taxonomy/categories/{{ category.id }}/rename" method="post">
+          <input type="text" name="name" value="{{ category.name }}" maxlength="40" aria-label="Название категории" required />
+          <button type="submit" class="btn btn-small">Переименовать</button>
+        </form>
+        <span class="item-meta">Используется в записях: {{ count }}</span>
+        <div class="tax-actions">
+          {% if count %}
+          <form action="/admin/taxonomy/categories/{{ category.id }}/move" method="post" class="tax-inline">
+            <select name="target_id" aria-label="Перенести записи в">
+              {% for other, _c in categories if other.id != category.id %}
+              <option value="{{ other.id }}">{{ other.name }}</option>
+              {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-small">Перенести записи</button>
+          </form>
+          {% else %}
+          <form action="/admin/taxonomy/categories/{{ category.id }}/delete" method="post" data-confirm="Удалить категорию «{{ category.name }}»?">
+            <button type="submit" class="btn btn-small btn-danger">Удалить</button>
+          </form>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+    <form class="tax-add" action="/admin/taxonomy/categories/add" method="post">
+      <input type="text" name="name" maxlength="40" placeholder="Новая категория" aria-label="Новая категория" required />
+      <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+  </section>
+
+  <section class="cards-list-section">
+    <div class="list-header">
+      <h2 class="list-title">Теги</h2>
+      <span class="list-count">{{ tags|length }} шт.</span>
+    </div>
+    <ul class="existing-cards">
+      {% for tag, count in tags %}
+      <li class="tax-item">
+        <form class="tax-rename" action="/admin/taxonomy/tags/{{ tag.id }}/rename" method="post">
+          <input type="text" name="name" value="{{ tag.name }}" maxlength="40" aria-label="Название тега" required />
+          <button type="submit" class="btn btn-small">Переименовать</button>
+        </form>
+        <span class="item-meta">Используется в записях: {{ count }}</span>
+        <div class="tax-actions">
+          {% if tags|length > 1 %}
+          <form action="/admin/taxonomy/tags/{{ tag.id }}/merge" method="post" class="tax-inline" data-confirm="Перенести все записи с тегом «{{ tag.name }}» на выбранный тег, а этот удалить?">
+            <select name="target_id" aria-label="Объединить с">
+              {% for other, _c in tags if other.id != tag.id %}
+              <option value="{{ other.id }}">{{ other.name }}</option>
+              {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-small">Объединить</button>
+          </form>
+          {% endif %}
+          <form action="/admin/taxonomy/tags/{{ tag.id }}/delete" method="post" data-confirm="Удалить тег «{{ tag.name }}»{% if count %}: он пропадёт из записей ({{ count }}){% endif %}?">
+            <button type="submit" class="btn btn-small btn-danger">Удалить</button>
+          </form>
+        </div>
+      </li>
+      {% else %}
+      <li class="empty-state">Тегов пока нет.</li>
+      {% endfor %}
+    </ul>
+    <form class="tax-add" action="/admin/taxonomy/tags/add" method="post">
+      <input type="text" name="name" maxlength="40" placeholder="Новый тег" aria-label="Новый тег" required />
+      <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+  </section>
+</main>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% set path = request.url.path %}
+<nav class="main-nav" aria-label="Меню админки">
+  <ul>
+    <li><a href="/admin" {% if path == '/admin' %}class="active" aria-current="page"{% endif %}>Записи</a></li>
+    <li><a href="/admin/new" {% if path == '/admin/new' %}class="active" aria-current="page"{% endif %}>Новая</a></li>
+    <li><a href="/admin/taxonomy" {% if path == '/admin/taxonomy' %}class="active" aria-current="page"{% endif %}>Теги</a></li>
+    <li><a href="/">На сайт</a></li>
+  </ul>
+</nav>

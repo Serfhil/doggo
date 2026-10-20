@@ -11,4 +11,5 @@ key.pub
 # Локальные данные
 *.db
 
-side/
+side/uploads/
+backups/

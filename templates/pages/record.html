@@ -1,96 +1,72 @@
-<!doctype html>
-<html lang="ru">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+{% extends "base.html" %}
+{% block title %}{{ record.title }} | {{ settings.SITE_NAME }}{% endblock %}
+{% block meta %}
+<meta name="description" content="{{ summary(record) }}" />
+{% if preview %}<meta name="robots" content="noindex" />{% endif %}
+{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='record.css') }}" />
+{% endblock %}
+{% block content %}
+<main class="container record-page">
+  {% if preview %}
+  <p class="preview-banner">
+    Предпросмотр.
+    {% if not record.is_published %}Это черновик, читатели его не видят.{% endif %}
+    <a href="/admin/edit/{{ record.id }}">Вернуться к редактированию</a>
+  </p>
+  {% endif %}
+  <article class="record-article">
+    <nav class="record-breadcrumbs" aria-label="Хлебные крошки">
+      <a href="/">Главная</a>
+      <span class="record-breadcrumbs-separator" aria-hidden="true">/</span>
+      <a href="/?category={{ record.category_id }}">{{ record.category.name }}</a>
+      <span class="record-breadcrumbs-separator" aria-hidden="true">/</span>
+      <span aria-current="page">{{ record.title }}</span>
+    </nav>
 
-    <title>{{ title }} | Тренируем собачку</title>
-
-    <!-- Общие стили сайта -->
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700;800&family=Onest:wght@400;500;600;700&display=swap"
-    />
-    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}" />
-
-    <!-- Уникальные стили страницы записи -->
-    <link rel="stylesheet" href="{{ url_for('static', path='record.css') }}" />
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="container header-inner">
-        <h1 class="brand">
-          <a href="/" class="brand-link">Тренируем собачку</a>
-        </h1>
-
-        {% include 'partials/top_panel.html' %}
+    <header class="record-header">
+      <a class="record-kicker" href="/?category={{ record.category_id }}">{{ record.category.name }}</a>
+      <h1 class="record-title">{{ record.title }}</h1>
+      {% if record.description %}
+      <p class="record-lead">{{ record.description }}</p>
+      {% endif %}
+      <div class="record-meta">
+        <time class="record-meta-item" datetime="{{ record.created_at.date().isoformat() }}">{{ record.created_at|date }}</time>
       </div>
+      {% if record.tags %}
+      <ul class="tags record-tags" aria-label="Теги записи">
+        {% for tag in record.tags %}
+        <li><a href="/?tag={{ tag.id }}">{{ tag.name }}</a></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
     </header>
 
-    <main class="container record-page">
-      <article class="record-article">
-        <!-- Хлебные крошки -->
-        <nav class="record-breadcrumbs" aria-label="Хлебные крошки">
-          <a href="/">Главная</a>
-          <span class="record-breadcrumbs-separator" aria-hidden="true">/</span>
-          <span aria-current="page">{{ title }}</span>
-        </nav>
-
-        <!-- Шапка записи -->
-        <header class="record-header">
-          {% if record_type %}
-          <span class="record-kicker">{{ record_type }}</span>
-          {% endif %}
-
-          <h1 class="record-title">{{ title }}</h1>
-
-          {% if description %}
-          <p class="record-lead">{{ description }}</p>
-          {% endif %}
-
-          {% if created_at or author %}
-          <div class="record-meta">
-            {% if created_at %}
-            <time class="record-meta-item" datetime="{{ created_at.isoformat() }}">
-              {{ created_at.strftime('%d.%m.%Y') }}
-            </time>
-            {% endif %}
-            {% if author %}
-            <span class="record-meta-item">Автор: {{ author }}</span>
-            {% endif %}
-          </div>
-          {% endif %}
-
-          {% if tags %}
-          <ul class="tags record-tags" aria-label="Теги записи">
-            {% for tag in tags %}
-            <li>{{ tag }}</li>
-            {% endfor %}
-          </ul>
-          {% endif %}
-        </header>
-
-        <!-- Основной текст записи.
-             text приходит обычным текстом, поэтому Jinja сам экранирует его (без |safe).
-             Пустая строка между абзацами = новый <p>. -->
-        <div class="record-body">
-          {% if text %}
-            {% for paragraph in text.replace('\r\n', '\n').split('\n\n') if paragraph.strip() %}
-            <p>{{ paragraph.strip() }}</p>
-            {% endfor %}
-          {% else %}
-          <p class="record-empty">Текст записи пока не добавлен.</p>
-          {% endif %}
+    {% if record.images %}
+    <div class="record-gallery {% if record.images|length > 1 %}record-gallery--multiple{% endif %}">
+      {% for image in record.images %}
+      <figure class="record-image">
+        <div class="record-image-media">
+          <img
+            src="/uploads/{{ image.filename }}"
+            alt="{{ image.alt }}"
+            {% if not loop.first %}loading="lazy"{% endif %}
+          />
         </div>
+      </figure>
+      {% endfor %}
+    </div>
+    {% endif %}
 
-        <!-- Подвал записи -->
-        <footer class="record-footer">
-          <a href="/" class="record-button">← Вернуться к списку</a>
-        </footer>
-      </article>
-    </main>
-  </body>
-</html>
+    {# text очищен nh3 при сохранении, поэтому выводим как есть #}
+    <div class="record-body">
+      {% if record.text %}{{ record.text|safe }}{% else %}<p class="record-empty">Текст записи пока не добавлен.</p>{% endif %}
+    </div>
+
+    <footer class="record-footer">
+      <a href="{{ back_url }}" class="record-button">← Вернуться к списку</a>
+    </footer>
+  </article>
+</main>
+{% endblock %}

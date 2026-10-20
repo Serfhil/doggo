@@ -1,33 +1,49 @@
-from datetime import datetime
+from pydantic import BaseModel, field_validator
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from utils.text import clean_name
 
-
-class RecordCreate(BaseModel):
-    """Данные записи на входе (форма админки). Теги приходят строками."""
-
-    title: str
-    description: str
-    text: str
-    record_type: str
-    tags: list[str] = []
+TITLE_MAX = 120
+DESCRIPTION_MAX = 300
+NAME_MAX = 40
 
 
-class RecordRead(RecordCreate):
-    """Запись на выходе: те же поля + то, что выдаёт БД."""
+class RecordForm(BaseModel):
+    """Данные формы записи. Сами не падают: ошибки отдаёт errors() для показа в форме."""
 
-    # from_attributes позволяет делать RecordRead.model_validate(orm_obj),
-    # то есть читать поля из атрибутов объекта, а не из словаря
-    model_config = ConfigDict(from_attributes=True)
+    title: str = ""
+    category_id: int | None = None
+    description: str = ""
+    text: str = ""  # уже очищенный HTML
+    is_published: bool = True
 
-    id: int
-    created_at: datetime | None = None
-    author: str | None = None
-    # В БД text может быть пустым, на входе он обязателен
-    text: str | None = None
-
-    @field_validator("tags", mode="before")
+    @field_validator("title", "description")
     @classmethod
-    def tags_to_names(cls, value):
-        # В ORM теги это объекты Tag, а нам нужны только их имена
-        return [getattr(tag, "name", tag) for tag in value or []]
+    def strip_spaces(cls, value: str) -> str:
+        return value.strip()
+
+    def errors(self) -> dict[str, str]:
+        """Правила из ТЗ 3.4: поле -> сообщение."""
+        found: dict[str, str] = {}
+        if not self.title:
+            found["title"] = "Введите название"
+        elif len(self.title) > TITLE_MAX:
+            found["title"] = f"Название не длиннее {TITLE_MAX} символов"
+        if len(self.description) > DESCRIPTION_MAX:
+            found["description"] = (
+                f"Краткое описание не длиннее {DESCRIPTION_MAX} символов"
+            )
+        if self.category_id is None:
+            found["category_id"] = "Выберите категорию"
+        if self.is_published and not self.text:
+            found["text"] = "Для публикации нужен основной текст"
+        return found
+
+
+def check_name(value: str) -> tuple[str, str | None]:
+    """Название тега или категории: (очищенное название, ошибка или None)."""
+    value = clean_name(value)
+    if not value:
+        return value, "Введите название"
+    if len(value) > NAME_MAX:
+        return value, f"Название не длиннее {NAME_MAX} символов"
+    return value, None

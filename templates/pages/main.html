@@ -1,60 +1,69 @@
-<!doctype html>
-<html lang="ru">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Тренируем собачку</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700;800&family=Onest:wght@400;500;600;700&display=swap"
+{% extends "base.html" %}
+{% block title %}{{ settings.SITE_NAME }}{% endblock %}
+{% block meta %}
+<meta name="description" content="{{ meta_description }}" />
+{% endblock %}
+{% block content %}
+<main class="container">
+  <section class="page-intro">
+    <!-- TODO: итоговый текст главной страницы -->
+    <p class="lead">
+      Справочник по тренировке собак: команды, упражнения, игры и игрушки.
+    </p>
+  </section>
+
+  <form class="search" method="get" action="/" role="search">
+    {% if filters.category %}<input type="hidden" name="category" value="{{ filters.category }}" />{% endif %}
+    {% if filters.tag %}<input type="hidden" name="tag" value="{{ filters.tag }}" />{% endif %}
+    <input
+      type="search"
+      name="q"
+      value="{{ filters.q or '' }}"
+      placeholder="Поиск по названию и описанию"
+      aria-label="Поиск"
     />
-    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}" />
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="container header-inner">
-        <h1 class="brand">Тренируем собачку</h1>
-        {% with active_page='main' %} {% include 'partials/top_panel.html' %} {%
-        endwith %}
-      </div>
-    </header>
+    <button type="submit" class="btn btn-primary">Найти</button>
+  </form>
 
-    <main class="container">
-      <section class="page-intro">
-        <p class="lead">
-          Это стартовая страница интерактивного конспекта. Карточки
-          выстраиваются в том порядке, в котором они добавлены в список. При
-          наведении или фокусе описание плавно поднимается снизу.
-        </p>
-      </section>
+  <nav class="chips" aria-label="Категории">
+    <a class="chip {% if not filters.category %}active{% endif %}" href="{{ url_with(category=None, page=None) }}">Все</a>
+    {% for category in categories %}
+    <a
+      class="chip {% if filters.category == category.id %}active{% endif %}"
+      href="{{ url_with(category=category.id, page=None) }}"
+      >{{ category.name }}</a
+    >
+    {% endfor %}
+  </nav>
 
-      <ol class="cards">
-        {% for card in cards %}
-        <li>
-          <a href="{{ url_for('record', record_id = card.id) }}">
-            <article class="card" tabindex="0">
-              <!-- Этот блок будет изображением. Сейчас — градиентная заглушка. -->
-              <div class="card-media" style="--card-image: none">
-                <div class="card-description">
-                  <p>{{ card.description }}</p>
-                </div>
-              </div>
+  {% if active_tag %}
+  <p class="active-filter">
+    Тег: <strong>{{ active_tag.name }}</strong>
+    <a href="{{ url_with(tag=None, page=None) }}">Сбросить</a>
+  </p>
+  {% endif %}
 
-              <div class="card-content">
-                <h2 class="card-title">{{ card.title }}</h2>
-                <ul class="tags">
-                  {% for tag in card.tags %}
-                  <li>{{ tag }}</li>
-                  {% endfor %}
-                </ul>
-              </div>
-            </article>
-          </a>
-        </li>
-        {% endfor %}
-      </ol>
-    </main>
-  </body>
-</html>
+  {% if cards %}
+  <ul class="cards">
+    {% for card in cards %}
+    <li>
+      {% set card_url = record_url(card) %}
+      {% include 'partials/card.html' %}
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% if pages > 1 %}
+  <nav class="pagination" aria-label="Страницы">
+    {% if page > 1 %}<a class="btn btn-secondary" href="{{ url_with(page=page - 1) }}">← Назад</a>{% else %}<span></span>{% endif %}
+    <span class="pagination-info">{{ page }} из {{ pages }}</span>
+    {% if page < pages %}<a class="btn btn-secondary" href="{{ url_with(page=page + 1) }}">Вперёд →</a>{% else %}<span></span>{% endif %}
+  </nav>
+  {% endif %}
+  {% else %}
+  <p class="empty-state">
+    {% if filters.q or filters.tag %}Ничего не найдено.{% elif filters.category %}В этой категории пока нет записей.{% else %}Записей пока нет.{% endif %}
+  </p>
+  {% endif %}
+</main>
+{% endblock %}

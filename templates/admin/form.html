@@ -1,0 +1,92 @@
+{% extends "admin/base.html" %}
+{% block title %}{% if record %}Изменить запись{% else %}Новая запись{% endif %} | Админка{% endblock %}
+{% block admin_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='vendor/quill/quill.snow.css') }}" />
+{% endblock %}
+{% block content %}
+<main class="admin-container">
+  {% if notice %}<p class="notice" role="status">{{ notice }}</p>{% endif %}
+  {% if errors %}<p class="notice notice-error" role="alert">Запись не сохранена, исправьте ошибки ниже.</p>{% endif %}
+
+  <section class="form-card">
+    <div class="form-header">
+      <h1 class="form-title">{% if record %}Изменить запись{% else %}Новая запись{% endif %}</h1>
+      {% if record %}
+      <p class="form-subtitle">
+        <a href="/admin/preview/{{ record.id }}" target="_blank" rel="noopener">Предпросмотр</a>
+        {% if record.is_published %} · <a href="/record/{{ record.id }}" target="_blank" rel="noopener">Открыть на сайте</a>{% endif %}
+      </p>
+      {% else %}
+      <p class="form-subtitle">Картинки можно добавить после первого сохранения.</p>
+      {% endif %}
+    </div>
+
+    <form id="recordForm" method="post" data-guard>
+      <div class="form-group">
+        <label for="title" class="form-label">Название</label>
+        <input type="text" id="title" name="title" maxlength="120" value="{{ values.title or '' }}" placeholder="Например: Команда «Лежать»" required />
+        {% if errors.title %}<span class="form-error">{{ errors.title }}</span>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="category_id" class="form-label">Категория</label>
+        <select id="category_id" name="category_id" required>
+          <option value="" disabled {% if not values.category_id %}selected{% endif %}>Выберите категорию</option>
+          {% for category in categories %}
+          <option value="{{ category.id }}" {% if values.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
+          {% endfor %}
+        </select>
+        {% if errors.category_id %}<span class="form-error">{{ errors.category_id }}</span>{% endif %}
+        <span class="form-hint">Список категорий меняется на странице «Теги».</span>
+      </div>
+
+      <div class="form-group">
+        <label for="description" class="form-label">Краткое описание</label>
+        <textarea id="description" name="description" maxlength="300" placeholder="Одно-два предложения для карточки">{{ values.description or '' }}</textarea>
+        {% if errors.description %}<span class="form-error">{{ errors.description }}</span>{% endif %}
+        <span class="form-hint">До 300 символов. Если пусто, на карточке будет начало основного текста.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="text" class="form-label">Основной текст</label>
+        <textarea id="text" name="text" rows="10">{{ values.text or '' }}</textarea>
+        <div id="editor" hidden></div>
+        {% if errors.text %}<span class="form-error">{{ errors.text }}</span>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <span class="form-label">Теги</span>
+        <div class="tags-selector">
+          {% for tag in tags %}
+          <div class="tag-option">
+            <input type="checkbox" id="tag{{ tag.id }}" name="tags" value="{{ tag.id }}" {% if tag.id in selected_tags %}checked{% endif %} />
+            <label for="tag{{ tag.id }}">{{ tag.name }}</label>
+          </div>
+          {% else %}
+          <span class="form-hint">Тегов пока нет, добавьте ниже.</span>
+          {% endfor %}
+        </div>
+        <label for="new_tags" class="form-label form-label-sub">Новые теги</label>
+        <input type="text" id="new_tags" name="new_tags" value="{{ new_tags }}" placeholder="Через запятую" />
+        {% if errors.new_tags %}<span class="form-error">{{ errors.new_tags }}</span>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="check-row">
+          <input type="checkbox" name="is_published" value="on" {% if values.is_published %}checked{% endif %} />
+          <span>Опубликовано (без галочки запись видна только в админке)</span>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <a href="/admin" class="btn btn-secondary">К списку</a>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+      </div>
+    </form>
+  </section>
+</main>
+{% endblock %}
+{% block admin_scripts %}
+<script src="{{ url_for('static', path='vendor/quill/quill.js') }}"></script>
+<script src="{{ url_for('static', path='admin/editor.js') }}" defer></script>
+{% endblock %}

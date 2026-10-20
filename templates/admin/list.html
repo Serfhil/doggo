@@ -1,0 +1,69 @@
+{% extends "admin/base.html" %}
+{% block title %}Записи | Админка{% endblock %}
+{% block content %}
+<main class="admin-container admin-wide">
+  {% if notice %}<p class="notice" role="status">{{ notice }}</p>{% endif %}
+
+  <section class="cards-list-section">
+    <div class="list-header">
+      <h1 class="list-title">Записи</h1>
+      <span class="list-count">{{ total }} шт.</span>
+    </div>
+
+    <form class="admin-filters" method="get" action="/admin">
+      <input type="search" name="q" value="{{ filters.q }}" placeholder="Поиск по названию" aria-label="Поиск" />
+      <select name="category" aria-label="Категория">
+        <option value="">Все категории</option>
+        {% for category in categories %}
+        <option value="{{ category.id }}" {% if filters.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
+        {% endfor %}
+      </select>
+      <select name="status" aria-label="Статус">
+        <option value="">Любой статус</option>
+        <option value="published" {% if filters.status == 'published' %}selected{% endif %}>Опубликованные</option>
+        <option value="draft" {% if filters.status == 'draft' %}selected{% endif %}>Черновики</option>
+      </select>
+      <button type="submit" class="btn btn-secondary">Найти</button>
+      <a href="/admin/new" class="btn btn-primary">+ Новая запись</a>
+    </form>
+
+    {% if items %}
+    <ul class="existing-cards">
+      {% for item in items %}
+      <li class="existing-card-item">
+        <div class="item-info">
+          <div class="item-main">
+            <span class="item-name">{{ item.title }}</span>
+            <span class="item-meta">
+              {{ item.category.name }} · {{ item.created_at|date }} · просмотры: {{ item.views }}
+            </span>
+          </div>
+          <span class="badge {% if item.is_published %}badge-ok{% else %}badge-draft{% endif %}">
+            {% if item.is_published %}Опубликовано{% else %}Черновик{% endif %}
+          </span>
+        </div>
+        <div class="item-actions">
+          <a href="/admin/edit/{{ item.id }}" class="btn btn-small">Изменить</a>
+          <a href="/admin/preview/{{ item.id }}" class="btn btn-small" target="_blank" rel="noopener">Просмотр</a>
+          <form action="/admin/delete/{{ item.id }}" method="post" data-confirm="Удалить запись «{{ item.title }}» вместе с картинками? Это необратимо.">
+            <button type="submit" class="btn btn-small btn-danger">Удалить</button>
+          </form>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+
+    {% if pages > 1 %}
+    <nav class="pagination" aria-label="Страницы">
+      {% set base = '/admin?q=' ~ (filters.q|urlencode) ~ '&category=' ~ (filters.category_id or '') ~ '&status=' ~ filters.status ~ '&page=' %}
+      {% if page > 1 %}<a class="btn btn-secondary" href="{{ base ~ (page - 1) }}">← Назад</a>{% else %}<span></span>{% endif %}
+      <span class="pagination-info">{{ page }} из {{ pages }}</span>
+      {% if page < pages %}<a class="btn btn-secondary" href="{{ base ~ (page + 1) }}">Вперёд →</a>{% else %}<span></span>{% endif %}
+    </nav>
+    {% endif %}
+    {% else %}
+    <p class="empty-state">Ничего не найдено. <a href="/admin/new">Создать запись</a></p>
+    {% endif %}
+  </section>
+</main>
+{% endblock %}
