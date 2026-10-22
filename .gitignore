@@ -2,14 +2,20 @@
 __pycache__/
 *.pyc
 .venv/
+venv/
+.pytest_cache/
 
 # Секреты
 .env
 key
 key.pub
 
-# Локальные данные
+# Локальные данные: база (и служебные файлы SQLite в режиме WAL), загрузки, копии, выгрузки
 *.db
+*.db-shm
+*.db-wal
+uploads/
+backups/
+export-*.json
 
 side/uploads/
-backups/
